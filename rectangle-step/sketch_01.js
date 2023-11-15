@@ -1,26 +1,29 @@
 const canvasSketch = require('canvas-sketch');
 
 const settings = {
-  dimensions: [1000, 1000]
+  dimensions: [1080, 1080]
 };
 
 const sketch = () => {
+
+  let x, y, w, h;
+
   return (props) => {
     const { context, width, height } = props;
-    context.fillStyle = 'darkblue';
+    context.fillStyle = 'white';
     context.fillRect(0, 0, width, height);
 
-    function drawRect(i) {
-      context.strokeStyle = 'cyan';
-      context.lineWidth = 8;
-      context.strokeRect(400, 200, 50 * i, 50 * i)
-      context.rotate(5 * i / 180)
-    }
+    x = width * 0.5;
+    y = height * 0.5;
+    w = width * 0.6;
+    h = height * 0.1;
 
-    for (let i = 2; i < 10; i += 2) {
-      drawRect(i)
-    }
+    context.save(); // ?
+    context.translate(x, y);
 
+    context.strokeStyle = 'green';
+    context.strokeRect(w * -0.5, h * -0.5, w, h);
+    context.restore(); // ?
   };
 };
 
