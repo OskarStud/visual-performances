@@ -1,36 +1,51 @@
 const canvasSketch = require('canvas-sketch');
 const math = require('canvas-sketch-util/math');
+const random = require('canvas-sketch-util/random')
 
 const settings = {
-  dimensions: [1080, 1080]
+  dimensions: [1080, 1080],
+  // animate: true
 };
 
-const sketch = () => {
+const sketch = (props) => {
+  const { context, width, height } = props;
+  let x, y, w, h, red, blue;
+  const num = 20;
+  const degress = 30;
+  let rects = [];
 
-  let x, y, w, h;
-  let angle, radius, rx, ry;
+  for (let i = 0; i < num; i++) {
+    x = random.range(0, width)
+    y = random.range(0, height)
+    w = random.range(200, 600)
+    h = random.range(40, 200)
+    red = random.range(0, 100);
+    blue = random.range(0, 100);
 
-  return (props) => {
-    const { context, width, height } = props;
+    rects.push({ x, y, w, h, red, blue })
+  };
+
+  return ({ context }) => {
     context.fillStyle = 'white';
     context.fillRect(0, 0, width, height);
 
-    x = width * 0.5;
-    y = height * 0.5;
-    w = width * 0.6;
-    h = height * 0.1;
+    rects.forEach(rect => {
+      const { x, y, w, h, red, blue } = rect;
 
-    context.save(); // Сохраняет позиции translate
-    context.translate(x, y);
-    context.strokeStyle = 'darkred';
-    drawSkewRect({ context, deg: 145 })
-    context.stroke();
-    context.restore(); // Возвращает позиции translate для остального документа
+      context.save(); // Сохраняет позиции translate
+      context.translate(x, y);
 
+      context.strokeStyle = `rgb(${red}% 20% ${blue}%)`;
+      drawSkewRect({ context, deg: degress, w, h })
+      context.stroke();
+
+      context.restore(); // Возвращает позиции translate для остального документа
+    })
   };
 };
 
 function drawSkewRect({ context, w = 600, h = 100, deg = 45 }) {
+  let angle, rx, ry;
   angle = math.degToRad(deg);
   rx = Math.cos(angle) * w;
   ry = Math.sin(angle) * w;
