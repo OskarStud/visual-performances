@@ -20,6 +20,12 @@ const sketch = (props) => {
     random.pick(risoColors).hex,
   ];
   let bgColor = random.pick(risoColors).hex;
+  const maskProps = {
+    radius: width * .4,
+    sides: 5,
+    x: width * .5,
+    y: height * .54,
+  }
 
   for (let i = 0; i < num; i++) {
     x = random.range(0, width)
@@ -37,12 +43,9 @@ const sketch = (props) => {
     context.fillRect(0, 0, width, height);
 
     context.save();
-    context.translate(width * .5, height * .5);
+    context.translate(maskProps.x, maskProps.y);
 
-    drawPolygon({ context, radius: 400, sides: 5 })
-    context.lineWidth = 10;
-    context.strokeStyle = 'black';
-    context.stroke();
+    drawPolygon({ context, radius: maskProps.radius, sides: maskProps.sides })
     context.clip();
 
     rects.forEach(rect => {
@@ -50,7 +53,7 @@ const sketch = (props) => {
       let shadowColor;
 
       context.save(); // Сохраняет позиции(стейта) translate
-      context.translate(width * -.5, height * -.5);
+      context.translate(-maskProps.x, -maskProps.y);
       context.translate(x, y);
 
       context.strokeStyle = stroke;
@@ -73,6 +76,16 @@ const sketch = (props) => {
 
       context.restore(); // Возвращает позиции(стейта) translate для остального документа
     })
+    context.restore();
+
+    //outline mask
+    context.save();
+    context.translate(maskProps.x, maskProps.y);
+    context.lineWidth = 20;
+    drawPolygon({ context, radius: maskProps.radius - context.lineWidth, sides: maskProps.sides })
+    context.globalCompositeOperation = 'color-burn';
+    context.strokeStyle = rectColors[0];
+    context.stroke();
     context.restore();
   };
 };
